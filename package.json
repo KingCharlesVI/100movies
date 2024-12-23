@@ -8,10 +8,10 @@
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && npm run dev",
     "build": "cd frontend && npm run build",
-    "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
+    "start": "npm run build && concurrently \"npm run start:frontend\" \"npm run start:backend\"",
     "start:frontend": "cd frontend && npm start",
     "start:backend": "cd backend && npm start",
-    "clean": "rm -rf frontend/node_modules backend/node_modules node_modules frontend/.next"
+    "clean": "rmdir /s /q frontend\\node_modules backend\\node_modules node_modules frontend\\.next"
   },
   "dependencies": {
     "concurrently": "^8.2.2"

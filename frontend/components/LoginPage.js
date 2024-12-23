@@ -3,7 +3,7 @@ import styles from '../styles/LoginPage.module.css';
 
 const LoginPage = ({ onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
@@ -19,7 +19,7 @@ const LoginPage = ({ onLogin }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, password }),
       });
 
       const data = await response.json();
@@ -29,6 +29,7 @@ const LoginPage = ({ onLogin }) => {
       }
 
       localStorage.setItem('token', data.token);
+      localStorage.setItem('username', data.username);
       onLogin(data.token);
     } catch (error) {
       setError(error.message);
@@ -47,12 +48,16 @@ const LoginPage = ({ onLogin }) => {
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             className={styles.input}
             required
+            minLength={3}
+            maxLength={20}
+            pattern="[a-zA-Z0-9_-]*"
+            title="Username can only contain letters, numbers, underscores, and hyphens"
           />
           <input
             type="password"
@@ -61,6 +66,7 @@ const LoginPage = ({ onLogin }) => {
             onChange={(e) => setPassword(e.target.value)}
             className={styles.input}
             required
+            minLength={6}
           />
           <button type="submit" className={styles.button}>
             {isLogin ? 'Login' : 'Sign Up'}

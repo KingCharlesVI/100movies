@@ -1,0 +1,35 @@
+.banner {
+    background-color: #1a1a1a;
+    border-bottom: 1px solid #333;
+    padding: 8px 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+  
+  .content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #666;
+    font-size: 14px;
+  }
+  
+  .links {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .links a {
+    color: #666;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  .links a:hover {
+    color: #ff1493;
+  }

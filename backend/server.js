@@ -20,6 +20,13 @@ const db = new sqlite3.Database('movies.db');
 
 // Create tables
 db.serialize(() => {
+  // Drop existing tables if they exist
+  db.run(`DROP TABLE IF EXISTS watched_movies`);
+  db.run(`DROP TABLE IF EXISTS users`);
+
+  // Enable foreign key support
+  db.run(`PRAGMA foreign_keys = ON`);
+
   // Users table
   db.run(`
     CREATE TABLE IF NOT EXISTS users (
@@ -97,8 +104,8 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 // Fetch specific movie details from TMDB
-const fetchMovieDetails = async (movieId) => {
-    const url = `https://api.themoviedb.org/3/movie/${movieId}`;
+const fetchMovieDetails = async (movieEntry) => {
+    const url = `https://api.themoviedb.org/3/movie/${movieEntry.id}`;
     const config = {
       params: {
         api_key: process.env.TMDB_API_KEY
@@ -107,9 +114,12 @@ const fetchMovieDetails = async (movieId) => {
   
     try {
       const response = await axios.get(url, config);
-      return response.data;
+      return {
+        ...response.data,
+        rank: movieEntry.rank
+      };
     } catch (error) {
-      console.error(`Error fetching movie ${movieId}:`);
+      console.error(`Error fetching movie ${movieEntry.id}:`);
       console.error('Error details:', {
         status: error.response?.status,
         statusText: error.response?.statusText,
@@ -121,28 +131,32 @@ const fetchMovieDetails = async (movieId) => {
 
 // Get all movies (protected route)
 app.get('/api/movies', authenticateToken, async (req, res) => {
-  try {
-    const moviePromises = moviesList.movies.map(movieId => fetchMovieDetails(movieId));
-    const movies = await Promise.all(moviePromises);
-    
-    const validMovies = movies.filter(movie => movie !== null);
-    
-    const formattedMovies = validMovies.map(movie => ({
-      id: movie.id,
-      title: movie.title,
-      release_date: movie.release_date,
-      poster_path: movie.poster_path,
-      overview: movie.overview,
-      vote_average: movie.vote_average,
-      runtime: movie.runtime,
-      genres: movie.genres
+    try {
+      const moviePromises = moviesList.movies.map(movieEntry => fetchMovieDetails(movieEntry));
+      const movies = await Promise.all(moviePromises);
+      
+      const validMovies = movies.filter(movie => movie !== null);
+      
+      const formattedMovies = validMovies.map(movie => ({
+        id: movie.id,
+        rank: movie.rank,
+        title: movie.title,
+        release_date: movie.release_date,
+        poster_path: movie.poster_path,
+        overview: movie.overview,
+        vote_average: movie.vote_average,
+        runtime: movie.runtime,
+        genres: movie.genres
     }));
+
+    formattedMovies.sort((a, b) => a.rank - b.rank);
 
     // Get user's watched movies
     db.all('SELECT movie_id FROM watched_movies WHERE user_id = ?',
       [req.user.userId],
       (err, watchedMovies) => {
         if (err) {
+          console.error('Database error:', err);
           res.status(500).json({ error: 'Failed to fetch watched movies' });
         } else {
           const watchedMovieIds = new Set(watchedMovies.map(m => m.movie_id));
@@ -168,6 +182,7 @@ app.post('/api/movies/:id/watch', authenticateToken, (req, res) => {
     [userId, id],
     (err) => {
       if (err) {
+        console.error('Database error:', err);
         res.status(500).json({ error: 'Failed to mark movie as watched' });
       } else {
         res.json({ success: true });
@@ -185,6 +200,7 @@ app.delete('/api/movies/:id/watch', authenticateToken, (req, res) => {
     [userId, id],
     (err) => {
       if (err) {
+        console.error('Database error:', err);
         res.status(500).json({ error: 'Failed to unmark movie as watched' });
       } else {
         res.json({ success: true });

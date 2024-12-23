@@ -10,6 +10,7 @@
 body {
   background-color: #000;
   color: #fff;
+  padding-top: 36px; /* Height of the banner */
 }
 
 html, body {

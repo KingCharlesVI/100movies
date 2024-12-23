@@ -4,21 +4,52 @@
     justify-content: center;
     align-items: center;
     padding: 20px;
+    background: linear-gradient(to bottom right, #000000, #1a1a1a);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .container::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(255, 20, 147, 0.1),
+      transparent
+    );
+    transform: rotate(-45deg);
+    animation: shine 8s linear infinite;
+  }
+  
+  @keyframes shine {
+    from {
+      transform: translateX(-50%) rotate(-45deg);
+    }
+    to {
+      transform: translateX(50%) rotate(-45deg);
+    }
   }
   
   .formContainer {
-    background: #1a1a1a;
+    background: rgba(26, 26, 26, 0.9);
     padding: 40px;
     border-radius: 16px;
     width: 100%;
     max-width: 400px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 20, 147, 0.1);
+    box-shadow: 0 0 40px rgba(255, 20, 147, 0.1);
+    z-index: 1;
   }
   
   .title {
     text-align: center;
-    font-size: 2rem;
+    font-size: 2.5rem;
     margin-bottom: 8px;
-    background: linear-gradient(to right, #e7e7e7, #e7e7e7);
+    background: linear-gradient(to right, #ff1493, #ff69b4);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -27,7 +58,7 @@
   .subtitle {
     text-align: center;
     color: #666;
-    margin-bottom: 24px;
+    margin-bottom: 32px;
     font-size: 1rem;
   }
   
@@ -41,29 +72,36 @@
     padding: 12px 16px;
     border: 2px solid #333;
     border-radius: 8px;
-    background: #111;
+    background: rgba(0, 0, 0, 0.2);
     color: #fff;
     font-size: 16px;
+    transition: all 0.2s ease;
   }
   
   .input:focus {
     outline: none;
     border-color: #ff1493;
+    box-shadow: 0 0 0 2px rgba(255, 20, 147, 0.2);
   }
   
   .button {
     padding: 12px;
-    background: #ff1493;
+    background: linear-gradient(to right, #ff1493, #ff69b4);
     border: none;
     border-radius: 8px;
     color: white;
     font-size: 16px;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: all 0.2s ease;
   }
   
   .button:hover {
-    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(255, 20, 147, 0.3);
+  }
+  
+  .button:active {
+    transform: translateY(0);
   }
   
   .switchButton {
@@ -73,10 +111,25 @@
     color: #ff1493;
     cursor: pointer;
     width: 100%;
+    transition: opacity 0.2s;
+  }
+  
+  .switchButton:hover {
+    opacity: 0.8;
   }
   
   .error {
     color: #ff4444;
     text-align: center;
     margin-bottom: 16px;
+    padding: 8px;
+    background: rgba(255, 68, 68, 0.1);
+    border-radius: 4px;
+    animation: shake 0.5s ease-in-out;
+  }
+  
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
   }

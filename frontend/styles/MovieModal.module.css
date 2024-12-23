@@ -1,0 +1,146 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+  
+  .modal {
+    background: #1a1a1a;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalFade 0.3s ease-out;
+  }
+  
+  @keyframes modalFade {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .closeButton {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 28px;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: color 0.2s;
+  }
+  
+  .closeButton:hover {
+    color: #ff1493;
+  }
+  
+  .content {
+    display: flex;
+    gap: 24px;
+    padding: 24px;
+  }
+  
+  .posterContainer {
+    flex-shrink: 0;
+    width: 300px;
+  }
+  
+  .poster {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+  }
+  
+  .info {
+    flex-grow: 1;
+  }
+  
+  .title {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 0 16px;
+    color: #fff;
+  }
+  
+  .metadata {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    color: #666;
+  }
+  
+  .imdb {
+    background: #f5c518;
+    color: black;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 12px;
+    margin-right: 4px;
+  }
+  
+  .genres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .genre {
+    background: rgba(255, 20, 147, 0.1);
+    border: 1px solid #ff1493;
+    color: #ff1493;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 14px;
+  }
+  
+  .overview {
+    color: #e7e7e7;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  
+  .tagline {
+    color: #ff1493;
+    font-style: italic;
+    font-size: 18px;
+  }
+  
+  @media (max-width: 768px) {
+    .content {
+      flex-direction: column;
+    }
+  
+    .posterContainer {
+      width: 100%;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+  
+    .title {
+      font-size: 24px;
+    }
+  }
