@@ -1,0 +1,283 @@
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  background: linear-gradient(to right, #e7e7e7, #e7e7e7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+  justify-content: center;
+  align-items: center;
+}
+  
+.search-container {
+  flex: 1;
+  min-width: 200px;
+  max-width: 400px;
+}
+  
+  .search-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 16px;
+    border: 2px solid #e7e7e7;
+    border-radius: 8px;
+    font-size: 16px;
+    background: #111;
+    color: #fff;
+  }
+  
+  .search-input:focus {
+    outline: none;
+    border-color: #ff1493;
+  }
+
+  .filters-container {
+    position: relative;
+  }
+  
+  .filter-button {
+    background: transparent;
+    border: 2px solid #e7e7e7;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #e7e7e7;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+  
+  .filter-button:hover {
+    background: rgba(255, 20, 147, 0.1);
+    border-color: #ff1493;
+    color: #ff1493;
+  }
+
+  .filter-indicator {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 12px;
+    height: 12px;
+    background-color: #ff1493;
+    border-radius: 50%;
+    border: 2px solid #1a1a1a;
+  }
+  
+  .filter-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 12px;
+    min-width: 200px;
+    z-index: 10;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .filter-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .filter-option:hover {
+    background: rgba(255, 20, 147, 0.1);
+    border-radius: 4px;
+  }
+  
+  .checkbox {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ff1493;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+  }
+  
+  .checkbox.checked {
+    background: #ff1493;
+  }
+  
+  .movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 24px;
+    padding: 0 16px;
+  }
+  
+  .movie-card {
+    background: #1a1a1a;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    padding: 16px;
+    max-width: 220px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  
+  .ranking {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  
+  .movie-info {
+    margin-bottom: 16px;
+  }
+  
+  .movie-title {
+    color: white;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .movie-year {
+    color: #666;
+    margin: 4px 0 0;
+    font-size: 14px;
+  }
+  
+  .watch-button {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border: 2px solid #ff1493;  /* This specifies width, style, and color all at once */
+    border-radius: 50%;
+    background-color: transparent;
+    color: #ff1493;  /* Changed to match border color */
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+  
+  .watch-button.watched {
+    background-color: #ff1493;
+    color: white;  /* Change text color when watched */
+  }
+  
+  .poster-container {
+    position: relative;
+    width: 100%;
+    height: 230px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  
+  .movie-poster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .imdb-tag {
+    background: #f5c518;
+    color: black;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 12px;
+  }
+  
+  .rating-value {
+    color: white;
+    font-size: 14px;
+  }
+
+  .counter {
+    color: #e7e7e7;
+    font-size: 1.2rem;
+    margin-bottom: 24px;
+  }
+  
+  .logoutButton {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 8px 16px;
+    background: transparent;
+    border: 2px solid #e7e7e7;
+    border-radius: 20px;
+    color: #e7e7e7;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .logoutButton:hover {
+    border-color: #ff1493;
+    color: #ff1493;
+  }
+  
+  @media (max-width: 768px) {
+    .container {
+      padding: 16px 8px;
+    }
+  
+    .controls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .search-container {
+      max-width: 100%;
+    }
+  
+    .title {
+      font-size: 2rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .movie-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .title {
+      font-size: 1.5rem;
+    }
+  }
