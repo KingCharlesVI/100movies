@@ -23,11 +23,8 @@
 
 .controls {
   display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+  justify-content: flex-end;
   margin-bottom: 24px;
-  justify-content: center;
-  align-items: center;
 }
 
 .search-container {
@@ -282,6 +279,10 @@
 
 .clearSearch:hover {
   background: rgba(255, 20, 147, 0.1);
+}
+
+.watchedCount {
+  color: #ff1493;
 }
 
 @media (max-width: 768px) {

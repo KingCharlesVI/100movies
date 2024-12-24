@@ -3,9 +3,8 @@ import styles from '../styles/MovieGrid.module.css';
 import MovieModal from './MovieModal';
 import Banner from './Banner';
 
-const MovieGrid = ({ token }) => {
+const MovieGrid = () => {
   const [movies, setMovies] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
   const [watchedMovies, setWatchedMovies] = useState(new Set());
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
   const [filters, setFilters] = useState({
@@ -31,11 +30,7 @@ const MovieGrid = ({ token }) => {
     const fetchMovies = async () => {
       try {
         const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-        const response = await fetch(`${API_URL}/api/movies`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const response = await fetch(`${API_URL}/api/movies`);
         const data = await response.json();
         const formattedMovies = data.movies.map(movie => ({
           ...movie,
@@ -49,7 +44,7 @@ const MovieGrid = ({ token }) => {
       }
     };
     fetchMovies();
-  }, [token]);
+  }, []);
 
   const toggleWatched = async (movieId, e) => {
     e.stopPropagation();
@@ -58,10 +53,7 @@ const MovieGrid = ({ token }) => {
       const isWatched = watchedMovies.has(movieId);
       const method = isWatched ? 'DELETE' : 'POST';
       const response = await fetch(`${API_URL}/api/movies/${movieId}/watch`, {
-        method,
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        method
       });
       
       if (response.ok) {
@@ -89,27 +81,13 @@ const MovieGrid = ({ token }) => {
 
   const filteredMovies = movies
     .filter(movie => {
-      const matchesSearch = movie.title.toLowerCase().includes(searchQuery.toLowerCase().trim());
       const isWatched = watchedMovies.has(movie.id);
-      
-      if (filters.watched && filters.unwatched) return matchesSearch;
-      if (filters.watched) return matchesSearch && isWatched;
-      if (filters.unwatched) return matchesSearch && !isWatched;
-      return matchesSearch;
+      if (filters.watched && filters.unwatched) return true;
+      if (filters.watched) return isWatched;
+      if (filters.unwatched) return !isWatched;
+      return true;
     })
-    .sort((a, b) => a.rank - b.rank);  // Keep movies in rank order
-
-  const NoResults = () => (
-    <div className={styles.noResults}>
-      <p>No movies found matching "{searchQuery}"</p>
-      <button 
-        onClick={() => setSearchQuery('')}
-        className={styles.clearSearch}
-      >
-        Clear Search
-      </button>
-    </div>
-  );
+    .sort((a, b) => a.rank - b.rank);
 
   return (
     <>
@@ -117,32 +95,13 @@ const MovieGrid = ({ token }) => {
       <div className={styles.container}>
         <header className={styles.header}>
           <h1 className={styles.title}>100 Movies</h1>
-          <div className={styles.userInfo}>
-            <span className={styles.username}>{localStorage.getItem('username')}</span>
-            <div className={styles.counter}>
-              {watchedMovies.size} / 100 movies watched
-            </div>
+          <div className={styles.counter}>
+            <span className={styles.watchedCount}>{watchedMovies.size}</span>
+            <span> / 100 movies watched</span>
           </div>
-          <button onClick={() => {
-            localStorage.removeItem('token');
-            localStorage.removeItem('username');
-            window.location.reload();
-          }} className={styles.logoutButton}>
-            Logout
-          </button>
         </header>
 
         <div className={styles.controls}>
-          <div className={styles['search-container']}>
-            <input
-              type="text"
-              placeholder="Search movie titles..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className={styles['search-input']}
-            />
-          </div>
-
           <div className={styles['filters-container']} ref={filterMenuRef}>
             <button 
               className={styles['filter-button']}
@@ -191,42 +150,38 @@ const MovieGrid = ({ token }) => {
         </div>
 
         <div className={styles['movie-grid']}>
-          {filteredMovies.length > 0 ? (
-            filteredMovies.map((movie) => (
-              <div 
-                key={movie.id} 
-                className={styles['movie-card']}
-                onClick={() => setSelectedMovie(movie)}
-              >
-                <div className={styles.ranking}>#{movie.rank}</div>
-                <div className={styles['movie-info']}>
-                  <h3 className={styles['movie-title']}>{movie.title}</h3>
-                  <p className={styles['movie-year']}>{movie.year}</p>
-                </div>
-                <button
-                  onClick={(e) => toggleWatched(movie.id, e)}
-                  className={`${styles['watch-button']} ${
-                    watchedMovies.has(movie.id) ? styles.watched : ''
-                  }`}
-                >
-                  ✓
-                </button>
-                <div className={styles['poster-container']}>
-                  <img
-                    src={movie.posterUrl}
-                    alt={movie.title}
-                    className={styles['movie-poster']}
-                  />
-                </div>
-                <div className={styles.rating}>
-                  <span className={styles['imdb-tag']}>IMDb</span>
-                  <span className={styles['rating-value']}>{movie.vote_average.toFixed(1)}/10</span>
-                </div>
+          {filteredMovies.map((movie) => (
+            <div 
+              key={movie.id} 
+              className={styles['movie-card']}
+              onClick={() => setSelectedMovie(movie)}
+            >
+              <div className={styles.ranking}>#{movie.rank}</div>
+              <div className={styles['movie-info']}>
+                <h3 className={styles['movie-title']}>{movie.title}</h3>
+                <p className={styles['movie-year']}>{movie.year}</p>
               </div>
-            ))
-          ) : (
-            <NoResults />
-          )}
+              <button
+                onClick={(e) => toggleWatched(movie.id, e)}
+                className={`${styles['watch-button']} ${
+                  watchedMovies.has(movie.id) ? styles.watched : ''
+                }`}
+              >
+                ✓
+              </button>
+              <div className={styles['poster-container']}>
+                <img
+                  src={movie.posterUrl}
+                  alt={movie.title}
+                  className={styles['movie-poster']}
+                />
+              </div>
+              <div className={styles.rating}>
+                <span className={styles['imdb-tag']}>IMDb</span>
+                <span className={styles['rating-value']}>{movie.vote_average.toFixed(1)}/10</span>
+              </div>
+            </div>
+          ))}
         </div>
 
         {selectedMovie && (
