@@ -2,37 +2,76 @@ const express = require('express');
 const sqlite3 = require('sqlite3');
 const cors = require('cors');
 const axios = require('axios');
+const path = require('path');
+const fs = require('fs');
+const os = require('os');
 const moviesList = require('./movies-list.json');
 require('dotenv').config();
 
 const app = express();
+
 app.use(cors({
-  origin: [
-    'http://localhost:3000',         // Development
-    'http://localhost:3001',         // Development
-    'https://yourdomain.com',        // Production
-    'https://www.yourdomain.com'     // Production with www
-  ],
+  origin: '*',
   methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type']
 }));
 app.use(express.json());
 
-// Setup SQLite database
-const db = new sqlite3.Database('movies.db');
+// Define the application name for the data directory
+const APP_NAME = '100movies';
 
-// Create watched_movies table
+// Get the appropriate local app data directory based on the OS
+function getAppDataPath() {
+  switch (process.platform) {
+    case 'win32':
+      return path.join(process.env.APPDATA || path.join(os.homedir(), 'AppData', 'Roaming'), APP_NAME);
+    case 'darwin':
+      return path.join(os.homedir(), 'Library', 'Application Support', APP_NAME);
+    case 'linux':
+      return path.join(os.homedir(), '.local', 'share', APP_NAME);
+    default:
+      return path.join(os.homedir(), '.'+APP_NAME);
+  }
+}
+
+// Setup database directory and file paths
+const dbDir = getAppDataPath();
+const dbPath = path.join(dbDir, 'movies.db');
+
+// Ensure the app data directory exists
+try {
+  fs.mkdirSync(dbDir, { recursive: true });
+  console.log('Database directory created/verified at:', dbDir);
+} catch (err) {
+  console.error('Error creating database directory:', err);
+  process.exit(1);
+}
+
+// Setup SQLite database with persistent storage
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) {
+    console.error('Error opening database:', err);
+    process.exit(1);
+  } else {
+    console.log('Connected to database at:', dbPath);
+  }
+});
+
+// Initialize database tables if they don't exist
 db.serialize(() => {
-  // Drop existing tables if they exist
-  db.run(`DROP TABLE IF EXISTS watched_movies`);
-
-  // Create watched movies table
+  // Create watched movies table only if it doesn't exist
   db.run(`
     CREATE TABLE IF NOT EXISTS watched_movies (
       id INTEGER PRIMARY KEY,
       movie_id INTEGER NOT NULL,
       watched_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
+  `);
+  
+  // Add any indexes if needed
+  db.run(`
+    CREATE INDEX IF NOT EXISTS idx_movie_id 
+    ON watched_movies(movie_id)
   `);
 });
 
@@ -138,6 +177,18 @@ app.delete('/api/movies/:id/watch', (req, res) => {
       }
     }
   );
+});
+
+// Gracefully close the database connection when the server stops
+process.on('SIGINT', () => {
+  db.close((err) => {
+    if (err) {
+      console.error('Error closing database:', err);
+    } else {
+      console.log('Database connection closed');
+    }
+    process.exit();
+  });
 });
 
 const PORT = process.env.PORT || 3001;
