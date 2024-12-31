@@ -112,6 +112,98 @@
   border-radius: 4px;
 }
 
+.filter-section {
+  padding: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.filter-section h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.range-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.range-inputs input[type="range"] {
+  width: 100%;
+}
+
+.range-inputs input[type="range"] i {
+  color: #ff1493;
+}
+
+.range-inputs input[type="number"] {
+  width: 70px;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: white;
+}
+
+.range-values {
+  text-align: center;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.searchContainer {
+  margin: 20px 0;
+  width: 100%;
+  max-width: 600px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 16px;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #ff1493;
+}
+
+.slider {
+  height: 36px;
+  width: 100%;
+}
+
+.thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background-color: #ff1493;
+  cursor: grab;
+}
+
+.track {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.track-1 {
+  background: #ff1493;
+}
+
+.yearInput {
+  width: 70px;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid #ff1493;
+  border-radius: 4px;
+  color: white;
+}
+
 .checkbox {
   width: 18px;
   height: 18px;

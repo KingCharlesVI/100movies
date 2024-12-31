@@ -2,14 +2,18 @@ import React, { useState, useEffect, useRef } from 'react';
 import styles from '../styles/MovieGrid.module.css';
 import MovieModal from './MovieModal';
 import Banner from './Banner';
+import ReactSlider from 'react-slider';
 
 const MovieGrid = () => {
   const [movies, setMovies] = useState([]);
   const [watchedMovies, setWatchedMovies] = useState(new Set());
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
     watched: false,
-    unwatched: false
+    unwatched: false,
+    rating: [0, 10],
+    year: { min: 1900, max: 2024 }
   });
   const [selectedMovie, setSelectedMovie] = useState(null);
   
@@ -82,10 +86,25 @@ const MovieGrid = () => {
   const filteredMovies = movies
     .filter(movie => {
       const isWatched = watchedMovies.has(movie.id);
-      if (filters.watched && filters.unwatched) return true;
-      if (filters.watched) return isWatched;
-      if (filters.unwatched) return !isWatched;
-      return true;
+      const meetsWatchedFilter = 
+        (!filters.watched && !filters.unwatched) ||
+        (filters.watched && isWatched) ||
+        (filters.unwatched && !isWatched) ||
+        (filters.watched && filters.unwatched);
+      
+      const meetsRatingFilter = 
+        movie.vote_average >= filters.rating[0] && 
+        movie.vote_average <= filters.rating[1];
+      
+      const meetsYearFilter = 
+        movie.year >= filters.year.min && 
+        movie.year <= filters.year.max;
+
+      const meetsSearchFilter = 
+        searchQuery === '' ||
+        movie.title.toLowerCase().includes(searchQuery.toLowerCase());
+
+      return meetsWatchedFilter && meetsRatingFilter && meetsYearFilter && meetsSearchFilter;
     })
     .sort((a, b) => a.rank - b.rank);
 
@@ -100,6 +119,16 @@ const MovieGrid = () => {
             <span> / 100 movies watched</span>
           </div>
         </header>
+
+        <div className={styles.searchContainer}>
+          <input
+            type="text"
+            placeholder="Search movies..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className={styles.searchInput}
+          />
+        </div>
 
         <div className={styles.controls}>
           <div className={styles['filters-container']} ref={filterMenuRef}>
@@ -143,6 +172,59 @@ const MovieGrid = () => {
                     )}
                   </div>
                   <span>Unwatched</span>
+                </div>
+
+                <div className={styles['filter-section']}>
+                  <h4>IMDb Rating</h4>
+                  <div className={styles['range-inputs']}>
+                    <ReactSlider
+                      className={styles.slider}
+                      thumbClassName={styles.thumb}
+                      trackClassName={styles.track}
+                      value={filters.rating}
+                      min={0}
+                      max={10}
+                      step={0.1}
+                      pearling
+                      minDistance={0.5}
+                      onChange={(value) => setFilters(prev => ({
+                        ...prev,
+                        rating: value
+                      }))}
+                    />
+                    <div className={styles['range-values']}>
+                      {filters.rating[0].toFixed(1)} - {filters.rating[1].toFixed(1)}
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles['filter-section']}>
+                  <h4>Release Year</h4>
+                  <div className={styles['range-inputs']}>
+                    <input
+                      type="number"
+                      min="1900"
+                      max="2024"
+                      value={filters.year.min}
+                      onChange={(e) => setFilters(prev => ({
+                        ...prev,
+                        year: { ...prev.year, min: parseInt(e.target.value) }
+                      }))}
+                      className={styles.yearInput}
+                    />
+                    <span>-</span>
+                    <input
+                      type="number"
+                      min="1900"
+                      max="2024"
+                      value={filters.year.max}
+                      onChange={(e) => setFilters(prev => ({
+                        ...prev,
+                        year: { ...prev.year, max: parseInt(e.target.value) }
+                      }))}
+                      className={styles.yearInput}
+                    />
+                  </div>
                 </div>
               </div>
             )}
