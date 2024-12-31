@@ -1,4 +1,4 @@
 node_modules
 .env
 movies.db
-frontend/.next/
+frontend/.next
